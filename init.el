@@ -25,3 +25,19 @@
 
 
 
+(add-to-list 'load-path "~/.emacs.d/simpc-mode")
+(require 'simpc-mode)
+;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+
+
+;; 让 .rs 文件使用内置 rust-ts-mode
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+
+;; 打开 Rust 文件时自动启动内置 Eglot
+(add-hook 'rust-ts-mode-hook #'eglot-ensure)
+
+;; 如果 Emacs 找不到 rust-analyzer，可显式指定
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '((rust-ts-mode) . ("rust-analyzer"))))

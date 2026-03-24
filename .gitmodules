@@ -1,0 +1,3 @@
+[submodule "simpc-mode"]
+	path = simpc-mode
+	url = https://github.com/rexim/simpc-mode.git
