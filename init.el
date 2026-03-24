@@ -41,3 +41,8 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '((rust-ts-mode) . ("rust-analyzer"))))
+
+;; 默认启动 server 模式，git 提交填消息时会使用
+(require 'server)
+(unless (server-running-p)
+  (server-start))
