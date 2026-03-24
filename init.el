@@ -43,6 +43,7 @@
                '((rust-ts-mode) . ("rust-analyzer"))))
 
 ;; 默认启动 server 模式，git 提交填消息时会使用
+(setenv "GIT_EDITOR" "emacsclient")
 (require 'server)
 (unless (server-running-p)
   (server-start))
