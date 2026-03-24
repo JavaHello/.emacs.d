@@ -30,7 +30,7 @@
 ;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
 (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
 
-
+(require 'eglot)
 ;; 让 .rs 文件使用内置 rust-ts-mode
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 
@@ -44,6 +44,7 @@
 
 ;; 默认启动 server 模式，git 提交填消息时会使用
 (setenv "GIT_EDITOR" "emacsclient")
+(require 'vc)
 (require 'server)
 (unless (server-running-p)
   (server-start))
