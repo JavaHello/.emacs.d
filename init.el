@@ -69,7 +69,7 @@
   (load-theme 'gruvbox-dark-medium t))
 
 
-(add-to-list 'load-path "~/.emacs.d/simpc-mode")
+(add-to-list 'load-path (expand-file-name "simpc-mode" user-emacs-directory))
 (require 'simpc-mode)
 ;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
 (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
