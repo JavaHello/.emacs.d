@@ -1,17 +1,58 @@
 ;;; init.el -*- lexical-binding: t; -*-
 
+;; 配置字符集
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
 (setq custom-file "~/.emacs.custom.el")
 ;; 启用语法高亮
 (global-font-lock-mode 1)
 ;; 高亮当前行
 (global-hl-line-mode 1)
 
-(set-face-attribute 'default nil
-		    :font "CaskaydiaMono Nerd Font Mono-13")
-;; 设置中文字体
-(set-fontset-font t 'han "Noto Sans CJK SC")
-(set-fontset-font t 'cjk-misc "Noto Sans CJK SC")
-(set-fontset-font t 'kana "Noto Sans CJK SC")
+
+;; mac meta
+(when (eq system-type 'darwin) ;; mac specific settings
+  (setq mac-option-modifier 'alt)
+  (setq mac-command-modifier 'meta)
+  (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
+  )
+
+
+;; (global-tab-line-mode t); 顶部显示 tab
+(global-auto-revert-mode t) ; 外部程序修改文件自动刷新
+
+
+(column-number-mode t) ; 启用列号显示
+(electric-pair-mode t) ; 自动补全括号
+(size-indication-mode t) ; 显示缓冲区大小
+(global-hl-line-mode t) ; 高亮显示当前行
+
+
+;; 判断是 gui 设置字体
+(when (display-graphic-p)
+  ;; 英文字体
+  (pcase system-type
+    ('darwin
+     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-fontset-font t 'han "PingFang SC")
+     (set-fontset-font t 'cjk-misc "PingFang SC")
+     (set-fontset-font t 'kana "PingFang SC"))
+
+    ('gnu/linux
+     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-fontset-font t 'han "Noto Sans Mono CJK SC")
+     (set-fontset-font t 'cjk-misc "Noto Sans Mono CJK SC")
+     (set-fontset-font t 'kana "Noto Sans Mono CJK SC"))
+
+    ('windows-nt
+     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-fontset-font t 'han "Microsoft YaHei UI")
+     (set-fontset-font t 'cjk-misc "Microsoft YaHei UI")
+     (set-fontset-font t 'kana "Microsoft YaHei UI"))))
+
+
 
 (load-theme 'gruvbox-dark-medium t)
 
@@ -48,3 +89,18 @@
 (require 'server)
 (unless (server-running-p)
   (server-start))
+
+
+;; plugin
+(require 'diff-hl)
+
+(global-diff-hl-mode)
+
+(require 'org-tempo)
+
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (setq-local electric-pair-pairs
+			(assq-delete-all ?< electric-pair-pairs))))
+;; keymap
+(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
