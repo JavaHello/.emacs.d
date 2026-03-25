@@ -106,8 +106,12 @@
 ;; (require 'diff-hl)
 ;; (global-diff-hl-mode)
 
+
 (use-package diff-hl
-  :hook (prog-mode . diff-hl-mode))
+  :hook ((prog-mode . diff-hl-mode)
+         (vc-dir-mode . diff-hl-dir-mode))
+  :config
+  (diff-hl-flydiff-mode 1))
 
 (use-package markdown-mode
   :ensure t
@@ -267,5 +271,6 @@
     (process-send-string proc prompt)
     (process-send-eof proc)
     (message "codex exec started...")))
+
 ;; keymap
 (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
