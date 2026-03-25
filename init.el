@@ -118,6 +118,10 @@
 (setq markdown-enable-math t)
 (setq markdown-hide-urls nil)
 
+(use-package magit
+  :ensure t
+  :commands (magit-status)
+  :bind ("C-x g" . magit-status))
 
 ;; 其他配置
 ;; 额外保险：进入 vterm 时关闭
