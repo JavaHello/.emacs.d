@@ -5,7 +5,9 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(setq custom-file "~/.emacs.custom.el")
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-readable-p custom-file)
+  (load custom-file nil 'nomessage))
 ;; 启用语法高亮
 (global-font-lock-mode 1)
 ;; 高亮当前行
