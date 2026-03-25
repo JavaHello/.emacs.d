@@ -35,19 +35,19 @@
   ;; 英文字体
   (pcase system-type
     ('darwin
-     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-face-attribute 'default nil :font "CaskaydiaMono Nerd Font Mono-14")
      (set-fontset-font t 'han "PingFang SC")
      (set-fontset-font t 'cjk-misc "PingFang SC")
      (set-fontset-font t 'kana "PingFang SC"))
 
     ('gnu/linux
-     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-face-attribute 'default nil :font "CaskaydiaMono Nerd Font Mono-13")
      (set-fontset-font t 'han "Noto Sans Mono CJK SC")
      (set-fontset-font t 'cjk-misc "Noto Sans Mono CJK SC")
      (set-fontset-font t 'kana "Noto Sans Mono CJK SC"))
 
     ('windows-nt
-     (set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font Mono-14")
+     (set-face-attribute 'default nil :font "CaskaydiaMono Nerd Font Mono-13")
      (set-fontset-font t 'han "Microsoft YaHei UI")
      (set-fontset-font t 'cjk-misc "Microsoft YaHei UI")
      (set-fontset-font t 'kana "Microsoft YaHei UI"))))
@@ -90,17 +90,45 @@
 (unless (server-running-p)
   (server-start))
 
-
-;; plugin
-(require 'diff-hl)
-
-(global-diff-hl-mode)
-
 (require 'org-tempo)
 
+
 (add-hook 'org-mode-hook
-	  (lambda ()
-	    (setq-local electric-pair-pairs
-			(assq-delete-all ?< electric-pair-pairs))))
+  (lambda ()
+    (setq-local electric-pair-inhibit-predicate
+                (lambda (c)
+                  (if (char-equal c ?<) t
+                    (electric-pair-default-inhibit c))))))
+;; 第三方 plugin
+;; (require 'diff-hl)
+;; (global-diff-hl-mode)
+
+(use-package diff-hl
+  :hook (prog-mode . diff-hl-mode))
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.md\\'" . markdown-mode))
+  ;; :init
+;;  (setq markdown-command "pandoc"))
+(setq markdown-fontify-code-blocks-natively t)
+(setq markdown-enable-math t)
+(setq markdown-hide-urls nil)
+
+
+;; 其他配置
+;; 额外保险：进入 vterm 时关闭
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (display-line-numbers-mode 0)))
+
+(defun my/disable-line-numbers-for-special-buffers ()
+  (when (member (buffer-name) '("*Shell Command Output*" "*Async Shell Command*"))
+    (display-line-numbers-mode 0)))
+
+(add-hook 'after-change-major-mode-hook #'my/disable-line-numbers-for-special-buffers)
+
+
 ;; keymap
 (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
+
