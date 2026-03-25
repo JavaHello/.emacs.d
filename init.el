@@ -109,9 +109,14 @@
 
 (use-package diff-hl
   :hook ((prog-mode . diff-hl-mode)
-         (vc-dir-mode . diff-hl-dir-mode))
+         (vc-dir-mode . diff-hl-dir-mode)
+         (dired-mode . diff-hl-dired-mode))
   :config
-  (diff-hl-flydiff-mode 1))
+  ;; 编辑时实时更新
+  (diff-hl-flydiff-mode 1)
+
+  ;; 和 Magit 联动：Magit 刷新后刷新 diff-hl
+  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
 
 (use-package markdown-mode
   :ensure t
