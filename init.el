@@ -128,7 +128,85 @@
 
 (add-hook 'after-change-major-mode-hook #'my/disable-line-numbers-for-special-buffers)
 
+;; codex config
+(defconst codex-buffer-name "*codex*"
+  "Shared buffer name for Codex interaction and async output.")
+
+(defun codex--project-root ()
+  "Return the current project root, or signal a user-facing error."
+  (if-let ((project (project-current nil)))
+      (project-root project)
+    (user-error "Codex 必须在项目目录下启动")))
+
+(defun codex--buffer ()
+  "Return the shared Codex buffer."
+  (get-buffer-create codex-buffer-name))
+
+(defun codex--display-buffer ()
+  "Display the shared Codex buffer."
+  (display-buffer (codex--buffer)))
+
+(defun codex--append-output (text)
+  "Append TEXT to the shared Codex buffer."
+  (when (and text (not (string-empty-p text)))
+    (with-current-buffer (codex--buffer)
+      (let ((inhibit-read-only t)
+            (moving (= (point) (point-max))))
+        (save-excursion
+          (goto-char (point-max))
+          (insert text))
+        (when moving
+          (goto-char (point-max)))))))
+
+(defun codex ()
+  "Open Codex CLI in a project-root vterm buffer."
+  (interactive)
+  (let ((default-directory (file-name-as-directory (codex--project-root))))
+    (vterm codex-buffer-name)
+    (vterm-send-string "codex")
+    (vterm-send-return)))
+
+(defun codex-here ()
+  "Open Codex CLI from the current project root."
+  (interactive)
+  (codex))
+
+(defun codex-edit-region (start end instruction)
+  "Asynchronously send selected region to `codex exec` and stream output."
+  (interactive "r\nsInstruction: ")
+  (let* ((text (buffer-substring-no-properties start end))
+         (prompt (format "%s\n\n```text\n%s\n```" instruction text))
+         (default-directory (file-name-as-directory (codex--project-root)))
+         (proc
+          (make-process
+           :name (generate-new-buffer-name "codex-edit-region")
+           :buffer nil
+           :command '("sh" "-lc" "codex exec - 2>&1")
+           :connection-type 'pipe
+           :coding 'utf-8-unix
+           :noquery t
+           :filter
+           (lambda (_process chunk)
+             (codex--append-output chunk))
+           :sentinel
+           (lambda (process event)
+             (when (memq (process-status process) '(exit signal))
+               (let ((code (process-exit-status process)))
+                 (codex--append-output
+                  (format "\n[codex exit %s] %s"
+                          code
+                          (string-trim event)))
+                 (unless (zerop code)
+                   (message "codex exec failed: %s (%s)"
+                            code (string-trim event)))))))))
+    (codex--append-output
+     (format "\n\n[%s] codex exec started in %s\n"
+             (format-time-string "%F %T")
+             default-directory))
+    (codex--display-buffer)
+    (process-send-string proc prompt)
+    (process-send-eof proc)
+    (message "codex exec started...")))
 
 ;; keymap
 (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
-
