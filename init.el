@@ -31,6 +31,7 @@
 (size-indication-mode t) ; 显示缓冲区大小
 (global-hl-line-mode t) ; 高亮显示当前行
 
+(save-place-mode 1)
 
 ;; 判断是 gui 设置字体
 (when (display-graphic-p)
