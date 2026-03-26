@@ -65,6 +65,14 @@
 
 (package-initialize)
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
 ;; 主题
 (use-package gruvbox-theme
   :ensure t
@@ -111,6 +119,7 @@
 
 
 (use-package diff-hl
+  :ensure t
   :hook ((prog-mode . diff-hl-mode)
          (vc-dir-mode . diff-hl-dir-mode)
          (dired-mode . diff-hl-dired-mode))
