@@ -165,6 +165,9 @@
   ;; 如果你本机安装的是 plantuml 命令
   (setq plantuml-default-exec-mode 'executable)
   (setq plantuml-executable-path "plantuml"))
+
+(use-package vterm
+  :ensure t)
 ;; 其他配置
 ;; 额外保险：进入 vterm 时关闭
 (add-hook 'vterm-mode-hook
