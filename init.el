@@ -87,37 +87,13 @@
   :config
   (load-theme 'gruvbox-dark-medium t))
 
-
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "simpc-mode" user-emacs-directory))
 (require 'simpc-mode)
 ;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
 (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
-;; 让 .rs 文件使用内置 rust-ts-mode
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
-;; (require 'eglot)
-(use-package eglot
-  :ensure t
-  :hook ((simpc-mode . eglot-ensure)
-         (rust-ts-mode . eglot-ensure)
-         (c++-mode . eglot-ensure))
-  :config
-  ;; 让 eglot 支持 simpc-mode
-  (add-to-list 'eglot-server-programs
-               '((simpc-mode) . ("clangd")))
-  (add-to-list 'eglot-server-programs
-               '((zig-ts-mode) . ("zls")))
-  (add-to-list 'eglot-server-programs
-               '((rust-ts-mode) . ("rust-analyzer"))))
-;; zig 相关配置
-(use-package zig-mode
-  :ensure t
-  :mode ("\\.\\(zig\\|zon\\)\\'" . zig-mode)
-  :hook (zig-mode . eglot-ensure))
 
-;; 如果 Emacs 找不到 rust-analyzer，可显式指定
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-               '((rust-ts-mode) . ("rust-analyzer"))))
+(require 'eglot-config)
 
 ;; 默认启动 server 模式，git 提交填消息时会使用
 (setenv "GIT_EDITOR" "emacsclient")
@@ -200,6 +176,6 @@
 
 (add-hook 'after-change-major-mode-hook #'my/disable-line-numbers-for-special-buffers)
 
-(load (expand-file-name "codex.el" user-emacs-directory) nil t)
+(require 'codex)
 
 ;; keymap

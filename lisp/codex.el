@@ -132,4 +132,4 @@
     (process-send-eof proc)
     (message "codex exec started...")))
 
-(provide 'my-codex)
+(provide 'codex)
