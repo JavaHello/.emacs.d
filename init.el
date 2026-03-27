@@ -92,14 +92,22 @@
 (require 'simpc-mode)
 ;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
 (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
-
-(require 'eglot)
 ;; 让 .rs 文件使用内置 rust-ts-mode
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
-
-;; 打开 Rust 文件时自动启动内置 Eglot
-(add-hook 'rust-ts-mode-hook #'eglot-ensure)
-
+;; (require 'eglot)
+(use-package eglot
+  :ensure t
+  :hook ((simpc-mode . eglot-ensure)
+         (rust-ts-mode . eglot-ensure)
+         (c++-mode . eglot-ensure))
+  :config
+  ;; 让 eglot 支持 simpc-mode
+  (add-to-list 'eglot-server-programs
+               '((simpc-mode) . ("clangd")))
+  (add-to-list 'eglot-server-programs
+               '((zig-ts-mode) . ("zls")))
+  (add-to-list 'eglot-server-programs
+               '((rust-ts-mode) . ("rust-analyzer"))))
 ;; zig 相关配置
 (use-package zig-mode
   :ensure t
@@ -115,7 +123,8 @@
 (setenv "GIT_EDITOR" "emacsclient")
 (require 'vc)
 (require 'server)
-(unless (server-running-p)
+(unless (or noninteractive
+            (server-running-p))
   (server-start))
 
 (require 'org-tempo)
@@ -160,9 +169,9 @@
 
 (use-package copilot
   :ensure t
-  :hook (prog-mode . copilot-mode))
-;; :bind (:map copilot-completion-map
-;;             ("TAB" . copilot-accept-completion))
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("M-RET" . copilot-accept-completion)))
 ;;             ("<tab>" . copilot-accept-completion)
 ;;             ("C-<tab>" . copilot-accept-completion-by-word)
 ;;             ("C-TAB" . copilot-accept-completion-by-word)
