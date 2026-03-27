@@ -36,6 +36,8 @@
 (setq-default indent-tabs-mode nil) ;; 用空格代替 Tab
 (setq-default standard-indent 4)    ;; 基础缩进
 
+(setq isearch-lazy-count t) ;; 搜索时显示匹配数量
+
 ;; 判断是 gui 设置字体
 (when (display-graphic-p)
   ;; 英文字体
@@ -94,6 +96,12 @@
 
 ;; 打开 Rust 文件时自动启动内置 Eglot
 (add-hook 'rust-ts-mode-hook #'eglot-ensure)
+
+;; zig 相关配置
+(use-package zig-mode
+  :ensure t
+  :mode ("\\.\\(zig\\|zon\\)\\'" . zig-mode)
+  :hook (zig-mode . eglot-ensure))
 
 ;; 如果 Emacs 找不到 rust-analyzer，可显式指定
 (with-eval-after-load 'eglot
@@ -183,4 +191,3 @@
 (load (expand-file-name "codex.el" user-emacs-directory) nil t)
 
 ;; keymap
-(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
