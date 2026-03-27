@@ -38,6 +38,9 @@
 
 (setq isearch-lazy-count t) ;; 搜索时显示匹配数量
 
+(setq completion-auto-help 'visible)
+(setq completion-cycle-threshold 3) ;; 3 个候选项以上才启用循环
+
 ;; 判断是 gui 设置字体
 (when (display-graphic-p)
   ;; 英文字体
@@ -157,14 +160,15 @@
 
 (use-package copilot
   :ensure t
-  :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("<tab>" . copilot-accept-completion)
-              ("TAB" . copilot-accept-completion)
-              ("C-<tab>" . copilot-accept-completion-by-word)
-              ("C-TAB" . copilot-accept-completion-by-word)
-              ("C-n" . copilot-next-completion)
-              ("C-p" . copilot-previous-completion)))
+  :hook (prog-mode . copilot-mode))
+  ;; :bind (:map copilot-completion-map
+  ;;             ("TAB" . copilot-accept-completion))
+  ;;             ("<tab>" . copilot-accept-completion)
+  ;;             ("C-<tab>" . copilot-accept-completion-by-word)
+  ;;             ("C-TAB" . copilot-accept-completion-by-word)
+  ;;             ("C-n" . copilot-next-completion)
+  ;;             ("C-p" . copilot-previous-completion)))
+
 
 (use-package plantuml-mode
   :ensure t
