@@ -169,7 +169,6 @@
 
 (use-package copilot
   :ensure t
-  :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
               ("M-RET" . copilot-accept-completion)))
 ;;             ("<tab>" . copilot-accept-completion)
