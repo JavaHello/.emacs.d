@@ -32,13 +32,16 @@
 (global-hl-line-mode t) ; 高亮显示当前行
 
 (save-place-mode 1)
+(setq-default tab-width 4)          ;; Tab 显示为 4 列
+(setq-default indent-tabs-mode nil) ;; 用空格代替 Tab
+(setq-default standard-indent 4)    ;; 基础缩进
 
 ;; 判断是 gui 设置字体
 (when (display-graphic-p)
   ;; 英文字体
   (pcase system-type
     ('darwin
-     (set-face-attribute 'default nil :font "CaskaydiaMono Nerd Font Mono-14")
+     (set-face-attribute 'default nil :font "CaskaydiaMono Nerd Font Mono-15")
      (set-fontset-font t 'han "PingFang SC")
      (set-fontset-font t 'cjk-misc "PingFang SC")
      (set-fontset-font t 'kana "PingFang SC"))
@@ -132,9 +135,9 @@
 
 (use-package markdown-mode
   :ensure t
-  :mode ("\\.md\\'" . markdown-mode))
-  ;; :init
-;;  (setq markdown-command "pandoc"))
+  :mode ("\\.md\\'" . markdown-mode)
+  :init
+  (setq markdown-command "pandoc"))
 (setq markdown-fontify-code-blocks-natively t)
 (setq markdown-enable-math t)
 (setq markdown-hide-urls nil)
@@ -144,6 +147,24 @@
   :commands (magit-status)
   :bind ("C-x g" . magit-status))
 
+(use-package copilot
+  :ensure t
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . copilot-accept-completion)
+              ("TAB" . copilot-accept-completion)
+              ("C-<tab>" . copilot-accept-completion-by-word)
+              ("C-TAB" . copilot-accept-completion-by-word)
+              ("C-n" . copilot-next-completion)
+              ("C-p" . copilot-previous-completion)))
+
+(use-package plantuml-mode
+  :ensure t
+  :mode ("\\.puml\\'" "\\.plantuml\\'")
+  :config
+  ;; 如果你本机安装的是 plantuml 命令
+  (setq plantuml-default-exec-mode 'executable)
+  (setq plantuml-executable-path "plantuml"))
 ;; 其他配置
 ;; 额外保险：进入 vterm 时关闭
 (add-hook 'vterm-mode-hook
