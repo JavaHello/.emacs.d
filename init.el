@@ -122,11 +122,11 @@
 
 
 (add-hook 'org-mode-hook
-  (lambda ()
-    (setq-local electric-pair-inhibit-predicate
-                (lambda (c)
-                  (if (char-equal c ?<) t
-                    (electric-pair-default-inhibit c))))))
+          (lambda ()
+            (setq-local electric-pair-inhibit-predicate
+                        (lambda (c)
+                          (if (char-equal c ?<) t
+                            (electric-pair-default-inhibit c))))))
 ;; 第三方 plugin
 ;; (require 'diff-hl)
 ;; (global-diff-hl-mode)
@@ -161,13 +161,13 @@
 (use-package copilot
   :ensure t
   :hook (prog-mode . copilot-mode))
-  ;; :bind (:map copilot-completion-map
-  ;;             ("TAB" . copilot-accept-completion))
-  ;;             ("<tab>" . copilot-accept-completion)
-  ;;             ("C-<tab>" . copilot-accept-completion-by-word)
-  ;;             ("C-TAB" . copilot-accept-completion-by-word)
-  ;;             ("C-n" . copilot-next-completion)
-  ;;             ("C-p" . copilot-previous-completion)))
+;; :bind (:map copilot-completion-map
+;;             ("TAB" . copilot-accept-completion))
+;;             ("<tab>" . copilot-accept-completion)
+;;             ("C-<tab>" . copilot-accept-completion-by-word)
+;;             ("C-TAB" . copilot-accept-completion-by-word)
+;;             ("C-n" . copilot-next-completion)
+;;             ("C-p" . copilot-previous-completion)))
 
 
 (use-package plantuml-mode
