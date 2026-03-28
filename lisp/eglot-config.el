@@ -4,8 +4,7 @@
 
 (use-package eglot
   :ensure t
-  :hook ((java-ts-mode . eglot-ensure)
-         (rust-ts-mode . eglot-ensure)
+  :hook ((rust-ts-mode . eglot-ensure)
          (c++-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
@@ -24,9 +23,17 @@
   (add-to-list 'eglot-server-programs
                '((rust-ts-mode) . ("rust-analyzer"))))
 
+;; lombok
+(defun get-lombok-jar ()
+  (getenv "LOMBOK_JAR"))
+
+
 (use-package eglot-java
   :ensure t
-  :hook (java-mode . eglot-java-mode)
+    ;; `eglot-java-mode' installs the `jdt://' handler and asks jdtls for
+  ;; `java/classFileContents', which is required for `M-.' into dependency classes.
+  :hook ((java-mode . eglot-java-mode)
+         (java-ts-mode . eglot-java-mode))
   :config
   (setq eglot-java-elipse-jdt-args (let ((lombok (get-lombok-jar)))
                                      (append (when lombok
@@ -35,11 +42,6 @@
                                                "-XX:+UseZGC"
                                                )
                                              ))))
-
-;; lombok
-(defun get-lombok-jar()
-  (getenv "LOMBOK_JAR"))
-
 
 (setq eglot-java-user-init-opts-fn 'custom-eglot-java-init-opts)
 (defun custom-eglot-java-init-opts (server eglot-java-eclipse-jdt)
