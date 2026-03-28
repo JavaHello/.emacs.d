@@ -24,7 +24,7 @@
 
 ;; (global-tab-line-mode t); 顶部显示 tab
 (global-auto-revert-mode t) ; 外部程序修改文件自动刷新
-
+(setq dired-auto-revert-buffer t) ; dired 模式也自动刷新
 
 (column-number-mode t) ; 启用列号显示
 (electric-pair-mode t) ; 自动补全括号
